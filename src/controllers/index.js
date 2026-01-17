@@ -1,6 +1,6 @@
-const MemberController=require("./MemberController");
-const BookController=require("./MemberController");
-const IssuedBookController=require("./IssuedBookController");
+const MemberController=require("./memberController");
+const BookController=require("./bookController");
+const IssuedBookController=require("./issuedBookController");
 
 module.exports={
     MemberController,

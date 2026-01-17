@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const memberRoutes = require("./MemberRoutes");
-const bookRoutes = require("./BookRoutes");
-const issuedBookRoutes = require("./IssuedBookRoutes");
+const MemberRoutes = require("./memberRoutes");
+const BookRoutes = require("./bookRoutes");
+const IssuedBookRoutes = require("./issuedBookRoutes");
 
-router.use("/members", memberRoutes);
-router.use("/books", bookRoutes);
-router.use("/issued-books", issuedBookRoutes);
+router.use("/members", MemberRoutes);
+router.use("/books", BookRoutes);
+router.use("/issued-books", IssuedBookRoutes);
 
 module.exports = router;
