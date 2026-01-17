@@ -1,48 +1,45 @@
 const {BookService}=require("../services")
 
-class BookController {
-    async addBook(req, res) {
+class BookController{
+    static async createBook(req,res,next) {
         try {
-            const book = await BookService.addBook(req.body);
-            res.status(201).json(book);
-        } catch (err) {
-            res.status(400).json({ message: err.message });
+            const book = await BookService.createBook(req.body);
+            res.status(201).json({success:true, data:book});
+        } catch (error) {
+            next(error);
         }
     }
-    async getAllBooks(req, res) {
+    static async getAllBooks(req,res,next) {
         try {
-            const books = await BookService.findAllBooks();
-            res.json(books);
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+            const books = await BookService.getAllBooks();
+            res.status(200).json({success:true, data:books});
+        } catch (error) {
+            next(error);
         }
     }
-    async getBookById(req, res) {
+    static async getBookById(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            const book = await BookService.findBookById(id);
-            res.json(book);
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            const book = await BookService.getBookById(req.params.id);
+            res.status(200).json({success:true, data:book});
+        } catch (error) {
+            next(error);
         }
     }
-    async updateBook(req, res) {
+    static async updateBook(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            const book = await BookService.updateBook(id, req.body);
-            res.json(book);
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            const book=await BookService.updateBook(req.params.id,req.body);
+            res.status(200).json({success:true, data:book});
+        } catch (error) {
+            next(error);
         }
     }
-    async deleteBook(req, res) {
+    static async deleteBook(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            await BookService.deleteBook(id);
-            res.json({ message: "Book deleted successfully" });
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            await BookService.deleteBook(req.params.id);
+            res.status(204).send();
+        } catch (error) {
+            next(error);
         }
     }
 }
-module.exports = new BookController();
+module.exports=BookController;

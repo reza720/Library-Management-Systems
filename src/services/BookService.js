@@ -1,33 +1,30 @@
-const {BookRepository}=require("../repositories");
+const {Book}=require("../models");
 
 class BookService{
-    async addBook(data){
-        return await BookRepository.create(data);
+    async createBook(data){
+        return Book.create(data);
     }
-    async findAllBooks(){
-        return await BookRepository.findAll();
+    async getAllBooks(){
+        return Book.findAll();
     }
-    async findBookById(id){
-        const target=await BookRepository.findById(id);
+    async getBookById(id){
+        const target=await Book.findByPk(id);
         if(!target){
-            throw new Error("Book not found");
+            const err=new Error("Book not found");
+            err.statusCode=404;
+            throw err;
         }
         return target;
     }
     async updateBook(id,data){
-        const target=await BookRepository.update(id,data);
-        if(!target){
-            throw new Error("Book not found");
-        }
+        const target=await this.getBookById(id);
+        await target.update(data);
         return target;
     }
     async deleteBook(id){
-        const target=await BookRepository.findById(id);
-        if(!target){
-            throw new Error("Book not found");
-        }
-        await BookRepository.delete(target);
-        return true;
+        const target=await this.getBookById(id);
+        await target.destroy();
+        return {message:"Deleted"};
     }
 }
 module.exports=new BookService();

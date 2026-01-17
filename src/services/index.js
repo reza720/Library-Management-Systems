@@ -1,6 +1,6 @@
-const MemberService = require("./MemberService");
-const BookService = require("./BookService");
-const IssuedBookService = require("./IssuedBookService");
+const MemberService = require("./memberService");
+const BookService = require("./bookService");
+const IssuedBookService = require("./issuedBookService");
 
 module.exports = {
   MemberService,

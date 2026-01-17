@@ -1,7 +1,7 @@
 const sequelize=require("../config/database");
-const Member=require("./Member");
-const Book=require("./Book");
-const IssuedBook=require("./IssuedBook");
+const Member=require("./member");
+const Book=require("./book");
+const IssuedBook=require("./issuedBook");
 
 Member.hasMany(IssuedBook, {foreignKey:"memberId"});
 IssuedBook.belongsTo(Member,{foreignKey:"memberId"});

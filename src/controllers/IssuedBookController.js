@@ -1,54 +1,45 @@
-const { IssuedBookService } = require("../services");
+const {IssuedBookService}=require("../services");
 
 class IssuedBookController {
-    async issueBook(req, res) {
+    static async createIssueBook(req,res,next) {
         try {
-            const { memberId, bookId } = req.body;
-            const record = await IssuedBookService.issueBook(memberId, bookId);
-            res.status(201).json(record);
-        } catch (err) {
-            res.status(400).json({ message: err.message });
+            const issuedBook=await IssuedBookService.createIssueBook(req.body);
+            res.status(201).json({success:true, data:issuedBook});
+        } catch (error) {
+            next(error);
         }
     }
-
-    async getAllIssuedBooks(req, res) {
+    static async getAllIssuedBooks(req,res,next) {
         try {
-            const records = await IssuedBookService.getAllIssuedBooks();
-            res.json(records);
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+            const issuedBook= await IssuedBookService.getAllIssuedBooks();
+            res.status(200).json({success:true, data:issuedBook});
+        } catch (error) {
+            next(error);
         }
     }
-
-    async getIssuedBookById(req, res) {
+    static async getIssuedBookById(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            const record = await IssuedBookService.getIssuedBookById(id);
-            res.json(record);
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            const issuedBooks=await IssuedBookService.getIssuedBookById(req.params.id);
+            res.status(200).json({success:true, data:issuedBooks});
+        } catch (error) {
+            next(error);
         }
     }
-
-    async returnBook(req, res) {
+    static async updateIssuedBook(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            const record = await IssuedBookService.returnBook(id);
-            res.json(record);
-        } catch (err) {
-            res.status(400).json({ message: err.message });
+            const issuedBook=await IssuedBookService.updateIssuedBook(req.params.id,req.body);
+            res.status(200).json({success:true, data:issuedBook});
+        } catch (error) {
+            next(error);
         }
     }
-
-    async deleteIssuedBook(req, res) {
+    static async deleteIssuedBook(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            await IssuedBookService.deleteIssuedBook(id);
-            res.json({ message: "Issued book record deleted" });
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            await IssuedBookService.deleteIssuedBook(req.params.id);
+            res.status(204).send();
+        } catch (error) {
+            next(error);
         }
     }
 }
-
-module.exports = new IssuedBookController();
+module.exports=IssuedBookController;

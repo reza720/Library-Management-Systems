@@ -1,66 +1,30 @@
-const { IssuedBookRepository, MemberRepository, BookRepository } = require("../repositories");
+const {IssuedBook}=require("../models");
 
-class IssuedBookService {
-    async issueBook(memberId, bookId) {
-        const member = await MemberRepository.findById(memberId);
-        if (!member) throw new Error("Member not found");
-
-        const book = await BookRepository.findById(bookId);
-        if (!book) throw new Error("Book not found");
-
-        const issued = await IssuedBookRepository.findByBookId(bookId);
-        if (issued && !issued.isReturned) {
-            throw new Error("Book is already issued");
-        }
-
-        const memberIssuedCount = await IssuedBookRepository.countActiveByMember(memberId);
-        if (memberIssuedCount >= 3) {
-            throw new Error("Member has reached borrow limit");
-        }
-
-        const today = new Date().toISOString().split("T")[0]; 
-        return await IssuedBookRepository.create({
-            memberId,
-            bookId,
-            issuedDate: today,
-            isReturned: false
-        });
+class IssuedBookService{
+    async createIssueBook(data){
+        return IssuedBook.create(data);
     }
-
     async getAllIssuedBooks() {
-        return await IssuedBookRepository.findAll();
+        return IssuedBook.findAll();
     }
-
     async getIssuedBookById(id) {
-        const record = await IssuedBookRepository.findById(id);
-        if (!record) throw new Error("Issued book record not found");
-        return record;
+        const target = await IssuedBook.findByPk(id);
+        if(!target){
+            const err=new Error("Issued Book not found");
+            err.statusCode=404;
+            throw err;
+        }
+        return target;
     }
-
     async updateIssuedBook(id, data) {
-        const record = await IssuedBookRepository.update(id, data);
-        if (!record) throw new Error("Issued book record not found");
-        return record;
+        const target = await this.getIssuedBookById(id);
+        await target.update(data); 
+        return target;
     }
-
-    async returnBook(id) {
-        const record = await IssuedBookRepository.findById(id);
-        if (!record) throw new Error("Issued book record not found");
-        if (record.isReturned) throw new Error("Book already returned");
-
-        const today = new Date().toISOString().split("T")[0]; 
-        return await IssuedBookRepository.update(id, {
-            returnDate: today,
-            isReturned: true
-        });
-    }
-
     async deleteIssuedBook(id) {
-        const record = await IssuedBookRepository.findById(id);
-        if (!record) throw new Error("Issued book record not found");
-
-        await IssuedBookRepository.delete(id);
-        return true;
+        const target = await this.getIssuedBookById(id);
+        await target.destroy();
+        return {message:"Deleted"};
     }
 }
 module.exports = new IssuedBookService();

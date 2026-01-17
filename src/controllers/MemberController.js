@@ -1,50 +1,45 @@
-const {MemberService} = require("../services");
+const {MemberService}=require("../services");
 
 class MemberController {
-    async addMember(req, res) {
+    static async createMember(req,res,next) {
         try {
-            const data = req.body;
-            const member = await MemberService.addMember(data);
-            res.status(201).json(member);
-        } catch (err) {
-            res.status(400).json({ message: err.message });
+            const member=await MemberService.createMember(req.body);
+            res.status(201).json({success:true, data:member});
+        } catch (error) {
+            next(error);
         }
     }
-    async getAllMembers(req, res) {
+    static async getAllMembers(req,res,next) {
         try {
-            const members = await MemberService.findAllMember();
-            res.json(members);
-        } catch (err) {
-            res.status(500).json({ message: err.message });
+            const members = await MemberService.getAllMembers();
+            res.status(200).json({success:true, data:members});
+        } catch (error) {
+            next(error);
         }
     }
-    async getMemberById(req, res) {
+    static async getMemberById(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            const member = await MemberService.findById(id);
-            res.json(member);
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            const member=await MemberService.getMemberById(req.params.id);
+            res.status(200).json({success:true, data:member});
+        } catch (error) {
+            next(error);
         }
     }
-    async updateMember(req, res) {
+    static async updateMember(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            const data = req.body;
-            const member = await MemberService.update(id, data);
-            res.json(member);
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            const member=await MemberService.updateMember(req.params.id,req.body);
+            res.status(200).json({success:true, data:member});
+        } catch (error) {
+            next(error);
         }
     }
-    async deleteMember(req, res) {
+    static async deleteMember(req,res,next) {
         try {
-            const id = parseInt(req.params.id);
-            await MemberService.delete(id);
-            res.json({ message: "Member deleted successfully" });
-        } catch (err) {
-            res.status(404).json({ message: err.message });
+            await MemberService.deleteMember(req.params.id);
+            res.status(204).send();
+        } catch (error) {
+            next(error);
         }
     }
 }
-module.exports = new MemberController();
+module.exports = MemberController;

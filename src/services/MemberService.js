@@ -1,33 +1,30 @@
-const {MemberRepository}=require("../repositories");
+const {Member}=require("../models");
 
 class MemberService{
-    async addMember(data){
-        return await MemberRepository.create(data);
+    async createMember(data){
+        return Member.create(data);
     }
-    async findAllMembers(){
-        return await MemberRepository.findAll();
+    async getAllMembers(){
+        return Member.findAll();
     }
-    async findMemberById(id){
-        const target=await MemberRepository.findById(id);
+    async getMemberById(id){
+        const target=await Member.findByPk(id);
         if(!target){
-            throw new Error("Member not found");
+            const err=new Error("Member not found");
+            err.statusCode=404;
+            throw err;
         }
         return target;
     }
     async updateMember(id,data){
-        const target=await MemberRepository.update(id,data);
-        if(!target){
-            throw new Error("Member not found");
-        }
+        const target=await this.getMemberById(id);
+        await target.update(data);
         return target;
     }
     async deleteMember(id){
-        const target=await MemberRepository.delete(id);
-        if(!target){
-            throw new Error("Member not found");
-        }
-        await MemberRepository.delete(target);
-        return true;
+        const target=await this.getMemberById(id);
+        await target.destroy();
+        return {message:"Deleted"};
     }
 }
 module.exports=new MemberService();
