@@ -1,5 +1,4 @@
 const sequelize=require("../config/database");
-
 const Member=require("./Member");
 const Book=require("./Book");
 const IssuedBook=require("./IssuedBook");
